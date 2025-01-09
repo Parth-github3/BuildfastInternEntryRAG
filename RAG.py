@@ -18,11 +18,13 @@ load_dotenv()
 st.title("Basic RAG App built on Gemini Model")
 
 # Get file for RAG (Only pdf)
-uploaded_files = st.file_uploader(
-    "Choose a PDF file", accept_multiple_files=False
-)
-loader = PyPDFLoader("uploaded_files")
-data = loader.load()
+def extract():
+    for file in uploaded_files = st.file_uploader(
+        "Choose a PDF file", accept_multiple_files=True
+    )
+    loader = PyPDFLoader(file)
+    data = loader.load()
+    return data
 
 # Processing the data in files
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
