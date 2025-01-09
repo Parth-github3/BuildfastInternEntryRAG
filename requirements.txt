@@ -4,4 +4,4 @@ langchain-google-genai
 python-dotenv
 streamlit
 pypdf
-pip install -qU langchain-community faiss-cpu
+faiss-gpu
