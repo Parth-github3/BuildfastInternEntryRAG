@@ -28,7 +28,7 @@ def extract():
         chunk_data = loader.load()
         return chunk_data
     data = data.append(chunk_data)
-
+    return data
 # Processing the data in files
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
 docs = text_splitter.split_documents(data)
