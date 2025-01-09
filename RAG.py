@@ -35,20 +35,15 @@ docs = text_splitter.split_documents(data)
 
 embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
 
-from langchain_chroma import Chroma
 
-vectorstore = Chroma(
-    collection_name="my_collection",
-    embedding_function=embeddings
+index = faiss.IndexFlatL2(len(embeddings.embed_query(docs)))
+
+vector_store = FAISS(
+    embedding_function=embeddings,
+    index=index,
+    docstore=InMemoryDocstore(),
+    index_to_docstore_id={},
 )
-# index = faiss.IndexFlatL2(len(embeddings.embed_query(docs)))
-
-# vector_store = FAISS(
-#     embedding_function=embeddings,
-#     index=index,
-#     docstore=InMemoryDocstore(),
-#     index_to_docstore_id={},
-# )
 
 # Creating the retriever object to retrieve the data directly from the Vectorstore
 retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 3})

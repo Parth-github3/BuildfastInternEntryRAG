@@ -6,4 +6,4 @@ streamlit
 pypdf
 faiss-cpu
 langchain-chroma>=0.1.2
-sqlite3
+
