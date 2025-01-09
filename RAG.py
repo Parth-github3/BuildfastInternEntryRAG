@@ -126,4 +126,4 @@ if query:
     # response = document_chain.invoke({"input": query})
     #print(response["answer"])
 
-    st.write(response["answer"])
+    st.write(response)
