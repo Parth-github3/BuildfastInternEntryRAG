@@ -4,4 +4,4 @@ langchain-google-genai
 python-dotenv
 streamlit
 pypdf
-faiss
+-qU langchain-community faiss-cpu
