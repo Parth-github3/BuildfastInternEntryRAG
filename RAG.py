@@ -27,7 +27,7 @@ data = loader.load()
 # Processing the data in files
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
 docs = text_splitter.split_documents(data)
-
+docs = ' '.join([str(s) for s in docs])
 # Creating and storing the embeddings of data in Chroma Vectorstore
 #vectorstore = Chroma.from_documents(documents=docs, embedding=GoogleGenerativeAIEmbeddings(model="models/embedding-001"))
 
