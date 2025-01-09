@@ -46,7 +46,7 @@ vectorstore = FAISS(
 )
 
 # Creating the retriever object to retrieve the data directly from the Vectorstore
-retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 10})
+retriever = vectorstore.as_retriever(search_type="mmr", search_kwargs={"k": 10})
 
 # Initializing the llm
 llm = ChatGoogleGenerativeAI(model="gemini-1.5-pro",temperature=0,max_tokens=None,timeout=None)
