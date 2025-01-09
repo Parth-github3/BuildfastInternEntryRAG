@@ -6,4 +6,4 @@ streamlit
 pypdf
 faiss-cpu
 langchain-chroma>=0.1.2
-chromadb <=0.3.29
+chromadb>=0.3.29
