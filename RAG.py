@@ -33,11 +33,12 @@ docs = text_splitter.split_documents(data)
 
 #vectorstore = FAISS.from_documents(documents=docs, embedding=GoogleGenerativeAIEmbeddings(model="models/embedding-001"))
 
+embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
 
-index = faiss.IndexFlatL2(len(GoogleGenerativeAIEmbeddings(model="models/embedding-001")).embed_query(docs))
+index = faiss.IndexFlatL2(len(embeddings.embed_query(docs)))
 
-vectorstore = FAISS(
-    embedding_function=GoogleGenerativeAIEmbeddings(model="models/embedding-001"),
+vector_store = FAISS(
+    embedding_function=embeddings,
     index=index,
     docstore=InMemoryDocstore(),
     index_to_docstore_id={},
