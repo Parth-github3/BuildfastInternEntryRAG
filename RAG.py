@@ -38,7 +38,7 @@ embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
 
 index = faiss.IndexFlatL2(len(embeddings.embed_query(docs)))
 
-vector_store = FAISS(
+vectorstore = FAISS(
     embedding_function=embeddings,
     index=index,
     docstore=InMemoryDocstore(),
