@@ -35,22 +35,28 @@ docs = text_splitter.split_documents(data)
 
 embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
 
-from langchain_chroma import Chroma
+# from langchain_chroma import Chroma
 
-vectorstore = Chroma.from_documents(documents=docs, embedding=embeddings)
+# vectorstore = Chroma.from_documents(documents=docs, embedding=embeddings)
 
-# index = faiss.IndexFlatL2(len(embeddings.embed_query(docs)))
+from langchain_community.vectorstores import FAISS
+import faiss
+from langchain_community.docstore.in_memory import InMemoryDocstore
+index = faiss.IndexFlatL2(len(embeddings.embed_query("hello world")))
+vector_store = FAISS(
+    embedding_function=embeddings,
+    index=index,
+    docstore=InMemoryDocstore(),
+    index_to_docstore_id={},
+)
+from uuid import uuid4
+uuids = [str(uuid4()) for _ in range(len(docs))]
 
-# vectorstore = FAISS(
-#     embedding_function=embeddings,
-#     index=index,
-#     docstore=InMemoryDocstore(),
-#     index_to_docstore_id={},
-# )
+vector_store.add_documents(documents=docs, ids=uuids)
 
 # Creating the retriever object to retrieve the data directly from the Vectorstore
-# retriever = vectorstore.as_retriever(search_type="mmr", search_kwargs={"k": 10})
-retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 10})
+retriever = vector_store.as_retriever(search_type="mmr", search_kwargs={"k": 10})
+# retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 10})
 
 # Initializing the llm
 llm = ChatGoogleGenerativeAI(model="gemini-1.5-pro",temperature=0,max_tokens=None,timeout=None)
