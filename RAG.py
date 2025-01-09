@@ -8,7 +8,10 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate
+import faiss
+from langchain_community.docstore.in_memory import InMemoryDocstore
 from langchain_community.vectorstores import FAISS
+
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -28,8 +31,17 @@ docs = text_splitter.split_documents(data)
 # Creating and storing the embeddings of data in Chroma Vectorstore
 #vectorstore = Chroma.from_documents(documents=docs, embedding=GoogleGenerativeAIEmbeddings(model="models/embedding-001"))
 
-vectorstore = FAISS.from_documents(documents=docs, embedding=GoogleGenerativeAIEmbeddings(model="models/embedding-001"))
+#vectorstore = FAISS.from_documents(documents=docs, embedding=GoogleGenerativeAIEmbeddings(model="models/embedding-001"))
 
+
+index = faiss.IndexFlatL2(len(GoogleGenerativeAIEmbeddings(model="models/embedding-001")).embed_query(docs))
+
+vectorstore = FAISS(
+    embedding_function=GoogleGenerativeAIEmbeddings(model="models/embedding-001"),
+    index=index,
+    docstore=InMemoryDocstore(),
+    index_to_docstore_id={},
+)
 
 # Creating the retriever object to retrieve the data directly from the Vectorstore
 retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 3})
