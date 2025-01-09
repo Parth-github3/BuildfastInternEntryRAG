@@ -18,10 +18,7 @@ load_dotenv()
 st.title("Basic RAG App built on Gemini Model")
 
 # Get file for RAG (Only pdf)
-uploaded_files = st.file_uploader(
-        "Choose a PDF file", accept_multiple_files=False
-    )
-loader = PyPDFLoader(uploaded_files)
+loader = PyPDFLoader("The Way of the Superior Man_ A Spiritual Guide to Mastering the Challenges of Women, Work, and Sexual Desire ( PDFDrive ).pdf")
 data = loader.load()
 
 # Processing the data in files
