@@ -10,6 +10,7 @@ from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate
 import chromadb
+from langchain_community.vectorstores import FAISS
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -30,14 +31,14 @@ text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100
 docs = text_splitter.split_documents(data)
 
 # Creating and storing the embeddings of data in Chroma Vectorstore
-vectorstore = Chroma.from_documents(documents=docs, embedding=GoogleGenerativeAIEmbeddings(model="models/embedding-001"))
+#vectorstore = Chroma.from_documents(documents=docs, embedding=GoogleGenerativeAIEmbeddings(model="models/embedding-001"))
 
+vectorstore = FAISS.from_documents(documents=docs, embedding=GoogleGenerativeAIEmbeddings(model="models/embedding-001"))
 
-
-client = chromadb.Client()
-collection = client.get_collection(name="chroma_docs")
-results = collection.get(ids=["page"])["documents"]
-print(results) # Not found []
+# client = chromadb.Client()
+# collection = client.get_collection(name="chroma_docs")
+# results = collection.get(ids=["page"])["documents"]
+# print(results) # Not found []
 
 # Creating the retriever object to retrieve the data directly from the Vectorstore
 retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 3})
