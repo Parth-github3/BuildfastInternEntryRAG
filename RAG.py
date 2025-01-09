@@ -57,32 +57,67 @@ llm = ChatGoogleGenerativeAI(model="gemini-1.5-pro",temperature=0,max_tokens=Non
 
 # Getting the queries of user
 query = st.chat_input("Say something: ") 
-prompt = query
+# prompt = query
 
 # Defining the system prompt
-system_prompt = (
-    "You are an assistant for question-answering tasks. "
-    "Use the following pieces of retrieved context to answer the question.  "
-    "If you don't know the answer, say that you "
-    "don't know. Use minimum of three sentences and keep the "
-    "answer concise."
-    "\n\n"
-    "{context}"
-)
+# system_prompt = (
+#     "You are an assistant for question-answering tasks. "
+#     "Use the following pieces of retrieved context to answer the question.  "
+#     "If you don't know the answer, say that you "
+#     "don't know. Use minimum of three sentences and keep the "
+#     "answer concise."
+#     "\n\n"
+#     "{context}"
+# )
 
-prompt = ChatPromptTemplate.from_messages(
+# prompt = ChatPromptTemplate.from_messages(
+#     [
+#         ("system", system_prompt),
+#         ("human", "{input}"),
+#     ]
+# )
+
+from langchain.chains.combine_documents import create_stuff_documents_chain
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+
+SYSTEM_TEMPLATE = """
+Answer the user's questions based on the below context. 
+If the context doesn't contain any relevant information to the question, don't make something up and just say "I don't know":
+
+<context>
+{context}
+</context>
+"""
+
+question_answering_prompt = ChatPromptTemplate.from_messages(
     [
-        ("system", system_prompt),
-        ("human", "{input}"),
+        (
+            "system",
+            SYSTEM_TEMPLATE,
+        ),
+        MessagesPlaceholder(variable_name="messages"),
     ]
 )
 
+document_chain = create_stuff_documents_chain(llm, question_answering_prompt)
+
+from langchain_core.messages import HumanMessage
+
 # Taking the action for provided query
 if query:
-    question_answer_chain = create_stuff_documents_chain(llm, prompt)
-    rag_chain = create_retrieval_chain(retriever, question_answer_chain)
+    
+    # question_answer_chain = create_stuff_documents_chain(llm, prompt)
+    response= document_chain.invoke(
+    {
+        "context": docs,
+        "messages": [
+            HumanMessage(content=query)
+        ],
+    }
+)
+    # rag_chain = create_retrieval_chain(retriever, document_chain)
 
-    response = rag_chain.invoke({"input": query})
+    # response = document_chain.invoke({"input": query})
     #print(response["answer"])
 
     st.write(response["answer"])
