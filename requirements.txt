@@ -4,4 +4,4 @@ langchain-google-genai
 python-dotenv
 streamlit
 pypdf
-faiss-gpu <= 1.7.2
+faiss-cpu
