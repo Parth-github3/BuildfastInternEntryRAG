@@ -30,7 +30,9 @@ def load_data():
         loader = PyPDFLoader(file)
         datas = loader.load()
         datas = datas.append()
-    return datas 
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
+        docs = text_splitter.split_documents(datas)
+    return docs
 # Get file for RAG (Only pdf)
 loader = PyPDFLoader("Parth kundlini.pdf")
 data = loader.load()
