@@ -31,7 +31,7 @@ with st.sidebar:
     for file in uploaded_files:
         with pdfplumber.open(file) as pdf:
             for page in pdf.pages:
-                extracted_text.append(page.extract_text())
+                extracted_text.append(page.page_content)
                    
 
     # loader = PyPDFLoader(res)
