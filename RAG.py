@@ -126,7 +126,7 @@ from langchain_core.messages import HumanMessage
 
 # Taking the action for provided query
 if query:
-    load(uploaded_files)
+    
     # question_answer_chain = create_stuff_documents_chain(llm, prompt)
     response= document_chain.invoke(
     {
