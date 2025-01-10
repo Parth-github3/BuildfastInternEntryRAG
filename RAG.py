@@ -25,16 +25,14 @@ with st.sidebar:
         "Choose a pdf file", accept_multiple_files=True, type="pdf"
     )
     
-def load(uploaded_files):
-    for file in uploaded_files:
-        loader = PyPDFLoader(file)
-        datas = loader.load()
-    
-    
-    return datas
+    def load(uploaded_files):
+        for file in uploaded_files:
+            loader = PyPDFLoader(file)
+            datas = loader.load()
+        return datas
 
-query = st.chat_input("Say something: ") 
-if query:
+
+
     loading= load(uploaded_files)
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
     docs = text_splitter.split_documents(loading)
@@ -83,7 +81,7 @@ retriever = vector_store.as_retriever(search_type="mmr", search_kwargs={"k": 10}
 llm = ChatGoogleGenerativeAI(model="gemini-1.5-pro",temperature=0,max_tokens=None,timeout=None)
 
 # Getting the queries of user
-
+query = st.chat_input("Say something: ") 
 # prompt = query
 
 # Defining the system prompt
