@@ -7,7 +7,7 @@ from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 import faiss
 from langchain_community.docstore.in_memory import InMemoryDocstore
 from langchain_community.vectorstores import FAISS
@@ -19,55 +19,21 @@ load_dotenv()
 
 # Title
 st.title("Basic RAG App built on Gemini Model")
-import pdfplumber
-with st.sidebar:
-    uploaded_files = st.file_uploader(
-        "Choose a pdf file", accept_multiple_files=True, type="pdf"
-    )
-    
-
-    
-    extracted_text = []
-    for file in uploaded_files:
-        with pdfplumber.open(file) as pdf:
-            for page in pdf.pages:
-                extracted_text.append(page.page_content)
-                   
-
-    # loader = PyPDFLoader(res)
-    # datas = loader.load()
-
-
-
-
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
-    docs = text_splitter.split_documents(extracted_text)
-        
-
 
 # Get file for RAG (Only pdf)
-# loader = PyPDFLoader("Parth kundlini.pdf")
-# data = loader.load()
+loader = PyPDFLoader("Parth kundlini.pdf")
+data = loader.load()
 
-# Processing the data in files
-# text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
-# docs = text_splitter.split_documents(datas)
-# docs = ' '.join([str(s) for s in docs])
+#Processing the data in files
+text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
+docs = text_splitter.split_documents(data)
+
 # Creating and storing the embeddings of data in Chroma Vectorstore
-#vectorstore = Chroma.from_documents(documents=docs, embedding=GoogleGenerativeAIEmbeddings(model="models/embedding-001"))
-
-#vectorstore = FAISS.from_documents(documents=docs, embedding=GoogleGenerativeAIEmbeddings(model="models/embedding-001"))
 
 embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
 
-# from langchain_chroma import Chroma
+index = faiss.IndexFlatL2(len(embeddings.embed_query("Instantiation Query")))
 
-# vectorstore = Chroma.from_documents(documents=docs, embedding=embeddings)
-
-from langchain_community.vectorstores import FAISS
-import faiss
-from langchain_community.docstore.in_memory import InMemoryDocstore
-index = faiss.IndexFlatL2(len(embeddings.embed_query("hello world")))
 vector_store = FAISS(
     embedding_function=embeddings,
     index=index,
@@ -88,31 +54,10 @@ llm = ChatGoogleGenerativeAI(model="gemini-1.5-pro",temperature=0,max_tokens=Non
 
 # Getting the queries of user
 query = st.chat_input("Say something: ") 
-# prompt = query
 
-# Defining the system prompt
-# system_prompt = (
-#     "You are an assistant for question-answering tasks. "
-#     "Use the following pieces of retrieved context to answer the question.  "
-#     "If you don't know the answer, say that you "
-#     "don't know. Use minimum of three sentences and keep the "
-#     "answer concise."
-#     "\n\n"
-#     "{context}"
-# )
-
-# prompt = ChatPromptTemplate.from_messages(
-#     [
-#         ("system", system_prompt),
-#         ("human", "{input}"),
-#     ]
-# )
-
-from langchain.chains.combine_documents import create_stuff_documents_chain
-from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 
 SYSTEM_TEMPLATE = """
-Answer the user's questions based on the below context. 
+Answer the user's questions based on the below context and make sure to provide a concise answer. 
 If the context doesn't contain any relevant information to the question, don't make something up and just say "I don't know":
 
 <context>
@@ -138,7 +83,6 @@ from langchain_core.messages import HumanMessage
 # Taking the action for provided query
 if query:
     
-    # question_answer_chain = create_stuff_documents_chain(llm, prompt)
     response= document_chain.invoke(
     {
         "context": docs,
@@ -147,9 +91,8 @@ if query:
         ],
     }
 )
-    # rag_chain = create_retrieval_chain(retriever, document_chain)
+    rag_chain = create_retrieval_chain(retriever, document_chain)
 
-    # response = document_chain.invoke({"input": query})
-    #print(response["answer"])
+    response = rag_chain.invoke()
 
     st.write(response)
