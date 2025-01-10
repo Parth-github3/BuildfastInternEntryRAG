@@ -38,15 +38,17 @@ st.title("Basic RAG App built on Gemini Model")
 loader = PyPDFLoader("Parth kundlini.pdf")
 data = loader.load()
 
-#Processing the data in files
+#Processing the data in files by splitting the text
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
 docs = text_splitter.split_documents(data)
 
 # Creating and storing the embeddings of data in FAISS Vectorstore
 embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
 
+# indexing
 index = faiss.IndexFlatL2(len(embeddings.embed_query("Instantiation Query")))
 
+# defining the vectorstore
 vector_store = FAISS(
     embedding_function=embeddings,
     index=index,
@@ -54,9 +56,11 @@ vector_store = FAISS(
     index_to_docstore_id={},
 )
 
+# providing unique ids to the data
 from uuid import uuid4
 uuids = [str(uuid4()) for _ in range(len(docs))]
 
+# adding the data to the vector database
 vector_store.add_documents(documents=docs, ids=uuids)
 
 # Creating the retriever object to retrieve the data directly from the Vectorstore
@@ -94,9 +98,11 @@ document_chain = create_stuff_documents_chain(llm, question_answering_prompt)
 
 # Taking the action for provided query and getting response
 if query:
+    # displaying the input
     st.markdown("## Input")
     st.write(query)
 
+    #invoking the chain
     response= document_chain.invoke(
     {
         "context": docs,
@@ -105,5 +111,6 @@ if query:
         ],
     }
 )
+    # displaying the result
     st.markdown("## Output")
     st.write(response)
