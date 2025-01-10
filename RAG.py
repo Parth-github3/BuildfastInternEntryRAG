@@ -10,7 +10,7 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 import faiss
 from langchain_community.docstore.in_memory import InMemoryDocstore
 from langchain_community.vectorstores import FAISS
-
+from langchain_core.messages import HumanMessage
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -27,8 +27,7 @@ data = loader.load()
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
 docs = text_splitter.split_documents(data)
 
-# Creating and storing the embeddings of data in Chroma Vectorstore
-
+# Creating and storing the embeddings of data in FAISS Vectorstore
 embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
 
 index = faiss.IndexFlatL2(len(embeddings.embed_query("Instantiation Query")))
@@ -39,6 +38,7 @@ vector_store = FAISS(
     docstore=InMemoryDocstore(),
     index_to_docstore_id={},
 )
+
 from uuid import uuid4
 uuids = [str(uuid4()) for _ in range(len(docs))]
 
@@ -46,7 +46,6 @@ vector_store.add_documents(documents=docs, ids=uuids)
 
 # Creating the retriever object to retrieve the data directly from the Vectorstore
 retriever = vector_store.as_retriever(search_type="mmr", search_kwargs={"k": 10})
-# retriever = vectorstore.as_retriever(search_type="similarity", search_kwargs={"k": 10})
 
 # Initializing the llm
 llm = ChatGoogleGenerativeAI(model="gemini-1.5-pro",temperature=0,max_tokens=None,timeout=None)
@@ -54,7 +53,7 @@ llm = ChatGoogleGenerativeAI(model="gemini-1.5-pro",temperature=0,max_tokens=Non
 # Getting the queries of user
 query = st.chat_input("Say something: ") 
 
-
+#Creating the Templates and prompts
 SYSTEM_TEMPLATE = """
 Answer the user's questions based on the below context and make sure to provide a concise answer. 
 If the context doesn't contain any relevant information to the question, don't make something up and just say "I don't know":
@@ -64,6 +63,7 @@ If the context doesn't contain any relevant information to the question, don't m
 </context>
 """
 
+# QA prompt
 question_answering_prompt = ChatPromptTemplate.from_messages(
     [
         (
@@ -74,12 +74,10 @@ question_answering_prompt = ChatPromptTemplate.from_messages(
     ]
 )
 
+#Creating the chain
 document_chain = create_stuff_documents_chain(llm, question_answering_prompt)
 
-from langchain_core.messages import HumanMessage
-
-
-# Taking the action for provided query
+# Taking the action for provided query and getting response
 if query:
     st.markdown("## Input")
     st.write(query)
