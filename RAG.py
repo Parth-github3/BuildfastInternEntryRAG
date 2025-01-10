@@ -36,14 +36,14 @@ with st.sidebar:
         return extracted_text
     res= extract()
 
-    loader = PyPDFLoader(res)
-    datas = loader.load()
+    # loader = PyPDFLoader(res)
+    # datas = loader.load()
 
 
 
 
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
-    docs = text_splitter.split_documents(datas)
+    docs = text_splitter.split_documents(res)
         
 
 
