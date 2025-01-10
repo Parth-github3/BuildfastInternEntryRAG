@@ -22,7 +22,7 @@ st.title("Basic RAG App built on Gemini Model")
 
 with st.sidebar:
     uploaded_files = st.file_uploader(
-        "Choose a pdf file", accept_multiple_files=True
+        "Choose a pdf file", accept_multiple_files=True, type="pdf"
     )
 
   
