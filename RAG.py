@@ -25,12 +25,12 @@ with st.sidebar:
         "Choose a pdf file", accept_multiple_files=True, type="pdf"
     )
 
-    for file in uploaded_files:
-        loader = PyPDFLoader(file)
-        datas = loader.load()
+for file in uploaded_files:
+    loader = PyPDFLoader(file)
+    datas = loader.load()
     
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
-        docs = text_splitter.split_documents(datas)
+text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
+docs = text_splitter.split_documents(datas)
         
 
 
