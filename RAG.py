@@ -50,8 +50,8 @@ def load_pdf(uploaded_file):
         return None
 
 if uploaded_file is not None:
-        st.text("You uploaded the following file:")
-        st.text(uploaded_file.name)
+        # st.text("You uploaded the following file:")
+        # st.text(uploaded_file.name)
 
         pdf_text = load_pdf(uploaded_file)
   
