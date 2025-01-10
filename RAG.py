@@ -81,7 +81,9 @@ from langchain_core.messages import HumanMessage
 
 # Taking the action for provided query
 if query:
+    st.markdown("##Input")
     st.write(query)
+
     response= document_chain.invoke(
     {
         "context": docs,
@@ -90,5 +92,5 @@ if query:
         ],
     }
 )
-
+    st.markdown("##Output")
     st.write(response)
