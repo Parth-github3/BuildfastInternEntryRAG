@@ -24,7 +24,7 @@ with st.sidebar:
     uploaded_files = st.file_uploader(
         "Choose a pdf file", accept_multiple_files=True
     )
-def load_data():
+
     datas = []
     for file in uploaded_files:
         loader = PyPDFLoader(file)
@@ -32,14 +32,14 @@ def load_data():
         datas = datas.append()
         text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
         docs = text_splitter.split_documents(datas)
-    return docs
+
 # Get file for RAG (Only pdf)
 loader = PyPDFLoader("Parth kundlini.pdf")
 data = loader.load()
 
 # Processing the data in files
-text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
-docs = text_splitter.split_documents(datas)
+# text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
+# docs = text_splitter.split_documents(datas)
 # docs = ' '.join([str(s) for s in docs])
 # Creating and storing the embeddings of data in Chroma Vectorstore
 #vectorstore = Chroma.from_documents(documents=docs, embedding=GoogleGenerativeAIEmbeddings(model="models/embedding-001"))
