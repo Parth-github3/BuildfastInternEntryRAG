@@ -5,7 +5,6 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain.chains import create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 import faiss
@@ -91,8 +90,5 @@ if query:
         ],
     }
 )
-    rag_chain = create_retrieval_chain(retriever, document_chain)
-
-    response = rag_chain.invoke()
 
     st.write(response)
