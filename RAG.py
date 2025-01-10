@@ -25,9 +25,18 @@ with st.sidebar:
         "Choose a pdf file", accept_multiple_files=True, type="pdf"
     )
     
+    def extract():
     
+        extracted_text = []
+        for file in uploaded_files:
+            with PyPDFLoader.open(file) as pdf:
+                for page in pdf.pages:
+                    extracted_text.append(page.extract_text())
+                   
+        return extracted_text
+    res= extract()
 
-    loader = PyPDFLoader(uploaded_files)
+    loader = PyPDFLoader(res)
     datas = loader.load()
 
 
