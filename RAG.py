@@ -26,8 +26,10 @@ with st.sidebar:
     )
 
   
+from langchain_community.document_loaders import PDFPlumberLoader
 
-loader = PyPDFLoader(uploaded_files)
+loader = PDFPlumberLoader(uploaded_files)
+#loader = PyPDFLoader(uploaded_files)
 datas = loader.load()
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
 docs = text_splitter.split_documents(datas)
