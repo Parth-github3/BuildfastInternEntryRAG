@@ -21,47 +21,18 @@ load_dotenv()
 st.title("Basic RAG App built on Gemini Model")
 
 with st.sidebar:
-    uploaded_file = st.file_uploader(
+    uploaded_files = st.file_uploader(
         "Choose a pdf file", accept_multiple_files=True, type="pdf"
     )
-from PyPDF2 import PdfReader
-from io import BytesIO
 
-def load_pdf(uploaded_file):
-    """Loads a PDF file using PyPDF2 and returns its text content.
+    for file in uploaded_files:
+        loader = PyPDFLoader(file)
+        datas = loader.load()
+    
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
+        docs = text_splitter.split_documents(datas)
+        
 
-    Args:
-        uploaded_file: An uploaded file object (from st.file_uploader).
-
-    Returns:
-        A string containing the extracted text from the PDF.
-    """
-    if uploaded_file is not None:
-        # Create a BytesIO object from the uploaded file
-        pdf_bytes = uploaded_file.getvalue()
-        pdf_reader = PdfReader(BytesIO(pdf_bytes)) 
-
-        text = ""
-        for page_num in range(len(pdf_reader.pages)):
-            page = pdf_reader.pages[page_num]
-            text += page.extract_text()
-        return text
-    else:
-        return None
-
-if uploaded_file is not None:
-        # st.text("You uploaded the following file:")
-        # st.text(uploaded_file.name)
-
-        pdf_text = load_pdf(uploaded_file)
-  
-from langchain_community.document_loaders import PDFPlumberLoader
-
-
-#loader = PyPDFLoader(uploaded_files)
-#datas = loader.load()
-text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
-docs = text_splitter.split_documents(pdf_text)
 
 # Get file for RAG (Only pdf)
 # loader = PyPDFLoader("Parth kundlini.pdf")
@@ -155,7 +126,7 @@ from langchain_core.messages import HumanMessage
 
 # Taking the action for provided query
 if query:
-    
+    load(uploaded_files)
     # question_answer_chain = create_stuff_documents_chain(llm, prompt)
     response= document_chain.invoke(
     {
