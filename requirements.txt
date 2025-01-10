@@ -3,7 +3,7 @@ langchain_community
 langchain-google-genai
 python-dotenv
 streamlit
-pypdf
+pypdf2
 faiss-cpu
 # langchain-chroma<=0.1.2
 # chromadb<=0.3.29
