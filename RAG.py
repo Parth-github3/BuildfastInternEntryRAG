@@ -19,7 +19,7 @@ load_dotenv()
 
 # Title
 st.title("Basic RAG App built on Gemini Model")
-
+import pdfplumber
 with st.sidebar:
     uploaded_files = st.file_uploader(
         "Choose a pdf file", accept_multiple_files=True, type="pdf"
@@ -29,7 +29,7 @@ with st.sidebar:
     
         extracted_text = []
         for file in uploaded_files:
-            with PyPDFLoader.open(file) as pdf:
+            with pdfplumber.open(file) as pdf:
                 for page in pdf.pages:
                     extracted_text.append(page.extract_text())
                    
