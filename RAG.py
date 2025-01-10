@@ -26,10 +26,9 @@ with st.sidebar:
     )
     
     
-    for file in uploaded_files:
-        file=[]
-        loader = PyPDFLoader(file)
-        datas = loader.load()
+
+    loader = PyPDFLoader(uploaded_files)
+    datas = loader.load()
 
 
 
