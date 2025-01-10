@@ -27,9 +27,10 @@ with st.sidebar:
     
     
     for file in uploaded_files:
+        file=[]
         loader = PyPDFLoader(file)
         datas = loader.load()
-        datas= ''.join(datas)
+
 
 
 
