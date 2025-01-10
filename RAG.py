@@ -25,7 +25,7 @@ with st.sidebar:
         "Choose a pdf file", accept_multiple_files=True
     )
 
-    datas = []
+  
     for file in uploaded_files:
         loader = PyPDFLoader(file)
         datas = loader.load()
