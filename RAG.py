@@ -25,16 +25,14 @@ with st.sidebar:
         "Choose a pdf file", accept_multiple_files=True, type="pdf"
     )
     
-    def extract():
+
     
-        extracted_text = []
-        for file in uploaded_files:
-            with pdfplumber.open(file) as pdf:
-                for page in pdf.pages:
-                    extracted_text.append(page.extract_text())
+    extracted_text = []
+    for file in uploaded_files:
+        with pdfplumber.open(file) as pdf:
+            for page in pdf.pages:
+                extracted_text.append(page.extract_text())
                    
-        return extracted_text
-    res= extract()
 
     # loader = PyPDFLoader(res)
     # datas = loader.load()
@@ -43,7 +41,7 @@ with st.sidebar:
 
 
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
-    docs = text_splitter.split_documents(res)
+    docs = text_splitter.split_documents(extracted_text)
         
 
 
