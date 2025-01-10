@@ -1,16 +1,31 @@
 ######## Requirements #######
 
+# streamlit
 import streamlit as st
+
+#for loading pdfs
 from langchain_community.document_loaders import PyPDFLoader
+
+# for text spliting
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+
+# for creating embeddings
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
+
+# for LLM
 from langchain_google_genai import ChatGoogleGenerativeAI
+
+# for creation of chains and prompts
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.messages import HumanMessage
+
+#for creation and managment of vectorstore
 import faiss
 from langchain_community.docstore.in_memory import InMemoryDocstore
 from langchain_community.vectorstores import FAISS
-from langchain_core.messages import HumanMessage
+
+# for gettng the API key
 from dotenv import load_dotenv
 load_dotenv()
 
