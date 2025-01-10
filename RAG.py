@@ -20,13 +20,24 @@ load_dotenv()
 # Title
 st.title("Basic RAG App built on Gemini Model")
 
+with st.sidebar:
+    uploaded_files = st.file_uploader(
+        "Choose a pdf file", accept_multiple_files=True
+    )
+def load_data():
+    datas = []
+    for file in uploaded_files:
+        loader = PyPDFLoader(file)
+        datas = loader.load()
+        datas = datas.append()
+    return datas 
 # Get file for RAG (Only pdf)
 loader = PyPDFLoader("Parth kundlini.pdf")
 data = loader.load()
 
 # Processing the data in files
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=100)
-docs = text_splitter.split_documents(data)
+docs = text_splitter.split_documents(datas)
 # docs = ' '.join([str(s) for s in docs])
 # Creating and storing the embeddings of data in Chroma Vectorstore
 #vectorstore = Chroma.from_documents(documents=docs, embedding=GoogleGenerativeAIEmbeddings(model="models/embedding-001"))
@@ -108,6 +119,7 @@ question_answering_prompt = ChatPromptTemplate.from_messages(
 document_chain = create_stuff_documents_chain(llm, question_answering_prompt)
 
 from langchain_core.messages import HumanMessage
+
 
 # Taking the action for provided query
 if query:
